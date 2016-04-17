@@ -90,8 +90,20 @@
 			}
 			function gen()
 			{
+				var x = document.getElementById("name").textContent;
+				var y = "static/" + x;
 				document.getElementById('name').textContent = document.getElementById('myText').value;
 				show_image(300,300,'asdf');
+				$.ajax({
+					type: "POST",
+					url: "ImageProcessor/ImageRecognition.py",
+					data: { 
+						param:y
+					}
+					}).done(function( o ) 
+					{
+					   console.log("we finished");
+					});
 			}
 		</script>
         <div class="container">
