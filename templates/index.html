@@ -119,10 +119,9 @@
           {% endfor -%}
         {% endif %}
       {% endwith %}
-				<h1>Detect For:</h1>
 				<form action = "" method = "POST" enctype = "multipart/form-data">
-					<div align = "center"><input type = "file" name="file" /></div><br>
-				<input type="submit" name="submit1" value="1" class="page-scroll btn btn-xl">Generate</input>
+					<div align = "center"><input type = "file" name="file" /></div><br><br>
+				<input type="submit" name="submit1" value="Generate" class="page-scroll btn btn-xl" accept ="image/*"></input>
 				<br>
                 </form> 
 				
@@ -162,21 +161,14 @@
                         <i class="fa fa-circle fa-stack-2x text-primary"></i>
                         <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
                     </span>
-                    <h4 class="service-heading">RoastMe</h4>
-                    <p class="text-muted">Sadistically destroy your will to live with our new RoastMe feature.</p>
+                    <h4 class="service-heading">Brand Recognition</h4>
+                    <p class="text-muted">Detect popular brands such as Coca cola or Sprite.</p>
                 </div>
             </div>
         </div>
     </section>
 	
-	<section>
-		<div class="col-lg-12 text-center">
-			<a><img id = "image" src = {{ url_for('static', filename='z.jpg')}}></a>
-			<h2 "class="section-heading">Summary</h2>
-			<h3 id = "summary" class="section-subheading text-muted">Summary</h3>
-			
-		</div>
-	</section>
+	
     <footer>
         <div class="container">
             <div class="row">
