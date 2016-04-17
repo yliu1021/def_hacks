@@ -81,20 +81,17 @@
     <!-- Header -->
     <header>
 		<script>
-			function show_image(src, width, height, alt) 
+			function show_image(width, height, alt) 
 			{
-				var img = document.createElement("img");
-				img.src = src;
-				img.width = width;
-				img.height = height;
-				img.alt = alt;
-
-				// This next line will just add it to the <body> tag
-				document.body.appendChild(img);
+				var img = document.getElementById("image");
+				var x = document.getElementById("name").textContent;
+				var y = "static/" + x;
+				img.src = y;
 			}
-			function print() 
+			function gen()
 			{
-				document.getElementById("summary").textContent = "HIHAIFHAIGH";
+				document.getElementById('name').textContent = document.getElementById('myText').value;
+				show_image(300,300,'asdf');
 			}
 		</script>
         <div class="container">
@@ -121,8 +118,38 @@
 				<form action = "" method = "POST" 
 					enctype = "multipart/form-data">
 					<div align = "center"><input type = "file" name = "file" /></div><br>
-					<button class = "buttonDesign" type = "submit" value = "Submit" onclick="document.getElementById("summary").textContent = "HIHAIFHAIGH">Upload</button>
+					<button class = "buttonDesign" type = "submit" value = "Submit">Upload</button>
+									
+				<meta charset="utf-8">
 				</form>
+				<title>Dropzone simple example</title>
+
+
+				<!--
+				  DO NOT SIMPLY COPY THOSE LINES. Download the JS and CSS files from the
+				  latest release (https://github.com/enyo/dropzone/releases/latest), and
+				  host them yourself!
+				-->
+				<script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+				<link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+
+
+				<p>
+				  This is the most minimal example of Dropzone. The upload in this example
+				  doesn't work, because there is no actual server to handle the file upload.
+				</p>
+
+				<!-- Change /upload-target to your upload address -->
+				
+				<form action="/upload-target" class="dropzone" ></form>
+					
+				
+				<p id = "name">File Name</p>
+				
+				<div align = "center"><input type="text" id = "myText" name="filename" value=""></div><br>
+				<button onclick="gen()" class = "buttonDesign">Generate</button>
+				<br>
+				
 				<br><br>
                 <a href="#services" class="page-scroll btn btn-xl">Features</a>
             </div>
@@ -169,7 +196,7 @@
 	
 	<section>
 		<div class="col-lg-12 text-center">
-			<a><img id = "image" src = "test.jpg"></a>
+			<a><img id = "image" src = {{ url_for('static', filename='z.jpg')}}></a>
 			<h2 "class="section-heading">Summary</h2>
 			<h3 id = "summary" class="section-subheading text-muted">Summary</h3>
 			
