@@ -55,32 +55,41 @@ class ImageRecognition():
     
     def _parseResponse(self, responses):
         result = {}
-        for response in responses:
+        for response in responses['responses']:
             if 'labelAnnotations' in response:
-                result['label'] = self._entityAnnotation(response['labelAnnotations'])
+                result[labelFeature] = map(self._entityAnnotation, response['labelAnnotations'])
             if 'textAnnotations' in response:
-                result['text'] = self._entityAnnotation(response['textAnnotations'])
+                result[textFeature] = map(self._entityAnnotation, response['textAnnotations'])
             if 'faceAnnotations' in response:
-                pass
+                result[faceFeature] = map(self._faceAnnotation, response['faceAnnotations'])
             if 'landmarkAnnotations' in response:
-                result['landmark'] = self._entityAnnotation(response['landmarkAnnotations'])
+                result[landmarkFeature] = map(self._entityAnnotation, response['landmarkAnnotations'])
             if 'logoAnnotations' in response:
-                pass
+                result[logoFeature] = map(self._entityAnnotation, response['logoAnnotations'])
             if 'safeSearchAnnotations' in response:
-                pass
+                result[safeSearchFeature] = self._safeSearchAnnotation(response['safeSearchAnnotation'])
             if 'imageProperties' in response:
-                pass
+                result[imageProperties] = self._imagePropertiesAnnotation(response['imagePropertiesAnnotation'])
             if 'error' in response:
                 result = response['error']
                 return result
-
-        return responses
+        return result
+        
+        
+    def _safeSearchAnnotation(self, safe):
+        result = {}
+        result['adult'] = self._likelihood(safe['adult'])
+        result['spoof'] = self._likelihood(safe['spoof'])
+        result['medical'] = self._likelihood(safe['medical'])
+        result['violence'] = self._likelihood(safe['violence'])
+        return result
         
         
     def _entityAnnotation(self, annotation):
         result = {}
         if 'description' in annotation:
             result['description'] = annotation['description']
+        return result
         
     
     def _faceAnnotation(self, annotation):
@@ -94,7 +103,11 @@ class ImageRecognition():
         result['joy'] = self._likelihood(annotation['joyLikelihood'])
         result['sorrow'] = self._likelihood(annotation['sorrowLikelihood'])
         result['anger'] = self._likelihood(annotation['angerLikelihood'])
-        result['surpriseLike']
+        result['surprise'] = self._likelihood(annotation['surpriseLikelihood'])
+        result['underExposed'] = self._likelihood(annotation['underExposedLikelihood'])
+        result['blurred'] = self._likelihood(annotation['blurredLikelihood'])
+        result['headwear'] = self._likelihood(annotation['headwearLikelihood'])
+        return result
         
         
     def _likelihood(self, l):
@@ -116,7 +129,8 @@ class ImageRecognition():
         result = []
         for vertex in poly['vertices']:
             result.append(self._vertex(vertex))
-    
+        return result
+        
         
     def _vertex(self, vertex):
         return (vertex['x'], vertex['y'])
@@ -158,11 +172,34 @@ if __name__ == '__main__':
     args = parser.parse_args()
     # print(getResults(args.image_file))
     i = ImageRecognition(args.image_file)
-    print(i.getResponse(
-        # labelFeature,
-        # textFeature,
-        faceFeature
-        # landmarkFeature,
-        # logoFeature,
+    response = i.getResponse(
+        labelFeature,
+        textFeature,
+        # faceFeature
+        landmarkFeature,
+        logoFeature,
         # safeSearchFeature)
-        ))
+        )
+    # print response
+    if labelFeature in response:
+        labels = response[labelFeature]
+        print("LABELS:")
+        for label in labels:
+            print(label['description'])
+    if textFeature in response:
+        texts = response[textFeature]
+        # print("TEXTS:")
+        for text in texts: pass
+            # print(text['description'])
+    if landmarkFeature in response:
+        landmarks = response[landmarkFeature]
+        print("LANDMARKS:")
+        for landmark in landmarks:
+            print(landmark['description'])
+    if logoFeature in response:
+        logos = response[logoFeature]
+        print("LOGOS:")
+        for logo in logos:
+            print(logo['description'])
+            
+        
