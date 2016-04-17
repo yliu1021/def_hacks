@@ -80,7 +80,6 @@ def createSection(topic):
         c = "= " + page.title + " =\n" + c
     except wikipedia.exceptions.PageError:
         return None
-
-    print(page.sections)
+        
     return Section(c)
 

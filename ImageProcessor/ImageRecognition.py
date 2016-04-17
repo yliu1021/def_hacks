@@ -5,6 +5,8 @@ import httplib2
 from googleapiclient import discovery
 from oauth2client.client import GoogleCredentials
 
+import WikiParser
+
 api = 'AIzaSyCzLFH3ZdvRoaLSXsp7fSK-NkHBG8kwEUM'
 apiVersion = "v1"
 DISCOVERY_URL='https://{api}.googleapis.com/$discovery/rest?version={apiVersion}'
@@ -30,21 +32,29 @@ class ImageRecognition():
                                   discoveryServiceUrl=DISCOVERY_URL)
     
     
-    def getResponse(self, features):
+    def getResponse(self, *f):
+        features = []
+        for feature in f:
+            if feature in AvailFeatures:
+                features.append(AvailFeatures[feature])
         b = self._createRequest(features)
         request = self.service.images().annotate(body=b)
         response = request.execute()
         return self._parseResponse(response)
+        # return response
         
     
     def _parseResponse(self, responses):
-        response['responses']
+        result = {}
         for response in responses:
-            if response == 'labelannotation':
-                response[]
-                
-        return response
-        
+            if 'labelAnnotations' in response:
+                labels = response['labelAnnotations']
+                for label in labels:
+                    if 'description' in label:
+                        pass
+
+        return responses
+
         
     def _createRequest(self, features):
         image = {'content': self.imageData}
@@ -62,44 +72,11 @@ class ImageRecognition():
     
 #key AIzaSyCzLFH3ZdvRoaLSXsp7fSK-NkHBG8kwEUM
 
-def getResults(photo_file):
-    """Run a label request on a single image"""
-
-    credentials = GoogleCredentials.get_application_default()
-    service = discovery.build('vision', 'v1', credentials=credentials,
-                              discoveryServiceUrl=DISCOVERY_URL)
-
-    with open(photo_file, 'rb') as image:
-        image_content = base64.b64encode(image.read())
-        service_request = service.images().annotate(body={
-            'requests': [{
-                'image': {
-                    'content': image_content.decode('UTF-8')
-                },
-                'features': [{
-                    'type': 'LABEL_DETECTION',
-                    'maxResults': 5
-                }, {
-                    'type': 'LANDMARK_DETECTION',
-                    'maxResults': 5
-                }, {
-                    'type': 'IMAGE_PROPERTIES',
-                    'maxResults': 5
-                }]
-            }]
-        })
-        response = service_request.execute()
-        for i in response['responses'][0]['imagePropertiesAnnotation']['dominantColors']['colors']:
-            print(i)
-        return map(lambda x: (x['description'], x['score']), response['responses'][0]['labelAnnotations'])
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('image_file', help='The image you\'d like to label.')
     args = parser.parse_args()
     # print(getResults(args.image_file))
     i = ImageRecognition(args.image_file)
-    print(i.getResponse([AvailFeatures['label']]))
-    
-    #fskdfhdsiufhdskfhdkshf
-    
+    print(i.getResponse('label', 'text', 'face', 'landmark', 'logo'))
+
