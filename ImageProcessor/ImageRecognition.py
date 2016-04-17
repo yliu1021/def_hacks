@@ -7,7 +7,8 @@ from oauth2client.client import GoogleCredentials
 
 import WikiParser
 
-api = 'AIzaSyCzLFH3ZdvRoaLSXsp7fSK-NkHBG8kwEUM'
+with file("../priv/apiKey.txt") as f:
+    api = f.read()
 apiVersion = "v1"
 DISCOVERY_URL='https://{api}.googleapis.com/$discovery/rest?version={apiVersion}'
 
@@ -69,8 +70,6 @@ class ImageRecognition():
         r = [{'image': image, 'features': f}]
         b = {'requests': r}
         return b
-    
-#key AIzaSyCzLFH3ZdvRoaLSXsp7fSK-NkHBG8kwEUM
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
