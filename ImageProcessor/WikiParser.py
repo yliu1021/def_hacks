@@ -63,7 +63,7 @@ class Section:
             acc += repr(section)
         s += acc
 
-        return s + '\n'
+        return s.encode("ascii") + '\n'
 
 
     def __repr__(self):
@@ -71,6 +71,8 @@ class Section:
             return self.__str__()
         except TypeError:
             return "empty"
+        except UnicodeEncodeError:
+            return "unicode error"
 
 
 def createSection(topic):
@@ -82,4 +84,3 @@ def createSection(topic):
         return None
         
     return Section(c)
-

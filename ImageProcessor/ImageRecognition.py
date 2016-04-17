@@ -7,21 +7,29 @@ from oauth2client.client import GoogleCredentials
 
 import WikiParser
 
-with file("../priv/apiKey.txt") as f:
+with open("../../priv/apiKey.txt") as f:
     api = f.read()
 apiVersion = "v1"
 DISCOVERY_URL='https://{api}.googleapis.com/$discovery/rest?version={apiVersion}'
 
+labelFeature = 'label'
+textFeature = 'text'
+faceFeature = 'face'
+landmarkFeature = 'landmark'
+logoFeature = 'logo'
+safeSearchFeature = 'safeSearchFeature'
+imageProperties = 'imageProperties'
+
 AvailFeatures = {
-    'label':      "LABEL_DETECTION",
-    'text':       "TEXT_DETECTION",
-    'face':       "FACE_DETECTION",
-    'landmark':   "LANDMARK_DETECTION",
-    'logo':       "LOGO_DETECTION",
-    'safeSearch': "SAFE_SEARCH_DETECTION",
-    'imageProperties':      "IMAGE_PROPERTIES"
+    labelFeature:      "LABEL_DETECTION",
+    textFeature:       "TEXT_DETECTION",
+    faceFeature:       "FACE_DETECTION",
+    landmarkFeature:   "LANDMARK_DETECTION",
+    logoFeature:       "LOGO_DETECTION",
+    safeSearchFeature: "SAFE_SEARCH_DETECTION",
+    imageProperties:   "IMAGE_PROPERTIES"
 }
-    
+
 class ImageRecognition():
     
     def __init__(self, imagePath):
@@ -49,13 +57,85 @@ class ImageRecognition():
         result = {}
         for response in responses:
             if 'labelAnnotations' in response:
-                labels = response['labelAnnotations']
-                for label in labels:
-                    if 'description' in label:
-                        pass
+                result['label'] = self._entityAnnotation(response['labelAnnotations'])
+            if 'textAnnotations' in response:
+                result['text'] = self._entityAnnotation(response['textAnnotations'])
+            if 'faceAnnotations' in response:
+                pass
+            if 'landmarkAnnotations' in response:
+                result['landmark'] = self._entityAnnotation(response['landmarkAnnotations'])
+            if 'logoAnnotations' in response:
+                pass
+            if 'safeSearchAnnotations' in response:
+                pass
+            if 'imageProperties' in response:
+                pass
+            if 'error' in response:
+                result = response['error']
+                return result
 
         return responses
-
+        
+        
+    def _entityAnnotation(self, annotation):
+        result = {}
+        if 'description' in annotation:
+            result['description'] = annotation['description']
+        
+    
+    def _faceAnnotation(self, annotation):
+        result = {}
+        result['boundingPoly'] = self._boundingPoly(annotation['boundingPoly'])
+        result['landmarks'] = map(self._landmark, annotation['landmarks'])
+        result['rollAngle'] = annotation['rollAngle']
+        result['panAngle'] = annotation['panAngle']
+        result['tiltAngle'] = annotation['tiltAngle']
+        result['confidence'] = annotation['detectionConfidence']
+        result['joy'] = self._likelihood(annotation['joyLikelihood'])
+        result['sorrow'] = self._likelihood(annotation['sorrowLikelihood'])
+        result['anger'] = self._likelihood(annotation['angerLikelihood'])
+        result['surpriseLike']
+        
+        
+    def _likelihood(self, l):
+        if l == 'UNKNOWN':
+            return -1
+        if l == 'VERY_UNLIKELY':
+            return 0
+        if l == 'UNLIKELY':
+            return 1
+        if l == 'POSSIBLE':
+            return 2
+        if l == 'LIKELY':
+            return 3
+        if l == 'VERY_LIKELY':
+            return 4
+        
+        
+    def _boundingPoly(self, poly):
+        result = []
+        for vertex in poly['vertices']:
+            result.append(self._vertex(vertex))
+    
+        
+    def _vertex(self, vertex):
+        return (vertex['x'], vertex['y'])
+        
+        
+    def _landmark(self, landmark):
+        result = {}
+        result['type'] = _type(landmark['type'])
+        result['position'] = _position(landmark['position'])
+        return result
+        
+        
+    def _position(self, pos):
+        return (pos['x'], pos['y'], pos['z'])
+        
+    
+    def _type(self, t):
+        return t
+        
         
     def _createRequest(self, features):
         image = {'content': self.imageData}
@@ -71,11 +151,18 @@ class ImageRecognition():
         b = {'requests': r}
         return b
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('image_file', help='The image you\'d like to label.')
     args = parser.parse_args()
     # print(getResults(args.image_file))
     i = ImageRecognition(args.image_file)
-    print(i.getResponse('label', 'text', 'face', 'landmark', 'logo'))
-
+    print(i.getResponse(
+        # labelFeature,
+        # textFeature,
+        faceFeature
+        # landmarkFeature,
+        # logoFeature,
+        # safeSearchFeature)
+        ))
