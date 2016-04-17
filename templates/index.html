@@ -92,18 +92,18 @@
 			{
 				var x = document.getElementById("name").textContent;
 				var y = "static/" + x;
-				document.getElementById('name').textContent = document.getElementById('myText').value;
-				show_image(300,300,'asdf');
-				$.ajax({
-					type: "POST",
-					url: "ImageProcessor/ImageRecognition.py",
-					data: { 
-						param:y
-					}
-					}).done(function( o ) 
-					{
-					   console.log("we finished");
-					});
+//				document.getElementById('name').textContent = document.getElementById('myText').value;
+				show_image(300,300,y);
+//				$.ajax({
+//					type: "POST",
+//					url: "ImageProcessor/ImageRecognition.py",
+//					data: { 
+//						param:y
+//					}
+//					}).done(function( o ) 
+//					{
+//					   console.log("we finished");
+//					});
 			}
 		</script>
         <div class="container">
@@ -120,29 +120,11 @@
         {% endif %}
       {% endwith %}
 				<h1>Detect For:</h1>
-				<form action="">
-					<input type="checkbox" name="asdf" value="text"><span class="checkboxtext"> &nbsp; Text &nbsp;&nbsp;</span>
-					<input type="checkbox" name="asdf" value="face"><span class="checkboxtext"> &nbsp; Faces &nbsp;&nbsp;</span>
-					<input type="checkbox" name="asdf" value="landmark"><span class="checkboxtext"> &nbsp; Landmarks &nbsp;&nbsp;</span>
-					<input type="checkbox" name="asdf" value="logo"><span class="checkboxtext"> &nbsp; Logos &nbsp;&nbsp;</span>
-				</form>
+				<form action = "" method = "POST" enctype = "multipart/form-data">
+					<div align = "center"><input type = "file" name="file" /></div><br>
+				<input type="submit" name="submit1" value="1" class="page-scroll btn btn-xl">Generate</input>
 				<br>
-				<form action = "" method = "POST" 
-					enctype = "multipart/form-data">
-					<div align = "center"><input type = "file" name = "file" /></div><br>
-					<button class="page-scroll btn btn-xl" type = "submit" value = "Submit">Upload</button>
-									
-				<meta charset="utf-8">
-				
-				</form>
-				
-					
-				
-				<p id = "name">File Name</p>
-				
-				<div align = "center"><input type="text" id = "myText" name="filename" value=""></div><br>
-				<button onclick="gen()" class="page-scroll btn btn-xl">Generate</button>
-				<br>
+                </form> 
 				
 				<br><br>
             </div>
