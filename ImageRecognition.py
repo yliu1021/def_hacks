@@ -9,6 +9,7 @@ import WikiParser
 
 with open("../priv/apiKey.txt") as f:
     api = f.read()
+    print api
 apiVersion = "v1"
 DISCOVERY_URL='https://{api}.googleapis.com/$discovery/rest?version={apiVersion}'
 
